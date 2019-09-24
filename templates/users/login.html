@@ -1,0 +1,25 @@
+{% extends "base_template.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<section class="container">
+    <div class="row">
+        <div class="d-flex justify-content-center flex-column offset-md-8 col-md-5 py-5 landing-form">
+            <img class="mx-auto" src="../static/img/icons/book-icons/128x128.png" alt="Picture of a Book">
+            <form action="/login" method="POST">
+                <h1 class="text-center">Login Form</h1>
+                <div class="form-group">
+                    <label for="Username">Username</label>
+                    <input type="text" class="form-control" id="Username" name="username" placeholder="Your Username Please">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="login-password" name="password" placeholder="Password Please">
+                </div>
+                <button type="submit" class="btn btn-block btn-custom">Login</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

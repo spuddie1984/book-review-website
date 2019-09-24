@@ -7,6 +7,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{% block title %}{% endblock %} - Book Reviews</title>
     
+    <link rel="icon" href="../static/img/icons/book-icons/64x64.png">
+
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/d167e16c76.js" crossorigin="anonymous"></script>
     <!-- Bootstrap CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     
@@ -16,24 +20,18 @@
 </head>
 <body>
     {% block navbar %}
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Navbar</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                        <a class="nav-link" href="#">Logout</a>
-                </li>
-            </ul>
-        </div>
+    <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand" href="/">
+            <img src="../static/img/icons/book-icons/bw.png" width="32px" height="auto" alt="Open Book Icon">
+        </a>
+        <a class="nav-link d-flex ml-auto " href="#">Logout</a>
     </nav>
     {% endblock %}
     <main id="content">{% block content %}{% endblock %}</div>
-    <footer id="footer">
+    <footer class="navbar fixed-bottom d-flex justify-content-center" id="footer">
         {% block footer %}
-        &copy; Copyright 2008 by <a href="http://domain.invalid/">Example</a>.
+        <a class="nav-lnik mr-3" href="https://github.com/spuddie1984"><i class="fab fa-github fa-2x"></i></a>
+        <a class="nav-lnik" href="https://www.linkedin.com/in/nathan-collins-64051612a/"><i class="fab fa-linkedin fa-2x"></i></a>
         {% endblock %}
     </footer>
     <!-- Bootstrap Scripts -->
