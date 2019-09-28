@@ -5,9 +5,9 @@
 {% block content %}
 <section class="container">
     <div class="row">
-        <div class="d-flex justify-content-center flex-column offset-md-8 col-md-5 py-5 landing-form">
-            <img class="mx-auto" src="../static/img/icons/book-icons/128x128.png" alt="Picture of a Book">
-            <form action="/login" method="POST">
+        <div class="d-flex justify-content-center flex-column offset-md-8 col-md-5 py-5 global-form">
+            <img class="mx-auto" src="{{url_for('static', filename='img/icons/book-icons/128x128.png')}}" alt="Picture of a Book">
+            <form action="{{url_for('login')}}" method="POST">
                 <h1 class="text-center">Login Form</h1>
                 <div class="form-group">
                     <label for="Username">Username</label>

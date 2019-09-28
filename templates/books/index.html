@@ -5,12 +5,12 @@
 {% block content %}
 <section class="container">
     <div class="row">
-        <div class="d-flex justify-content-center flex-column col-md-5 py-5 landing-form">
-            <img class="mx-auto" src="../../static/img/icons/magnifying-glass-icons/128x128.png" alt="Magnifying Glass Icon">
-            <form action="/books" method="POST">
+        <div class="d-flex justify-content-center flex-column col-md-5 py-5 global-form">
+            <img class="mx-auto" src="{{url_for('static', filename='img/icons/magnifying-glass-icons/128x128.png')}}" alt="Magnifying Glass Icon">
+            <form action="{{url_for('books')}}" method="POST">
                 <h1 class="text-center">Search</h1>
                 <div class="form-group">
-                    <input type="text" class="form-control" id="Name" name="result" placeholder="Author, ISBN or Title">
+                    <input type="text" class="form-control" id="Name" name="search" placeholder="Author, ISBN or Title">
                 </div>
                 <button type="submit" class="btn btn-block btn-custom">Search</button>
             </form>

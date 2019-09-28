@@ -16,37 +16,6 @@ body{
     padding: 1em !important;
 }
 
-/* Landing Page */
-
-.landing-form{
-    background-color: rgba(255,255,255,0.8) !important;
-    margin-top: 7vh;
-    margin-bottom: 15%;
-}
-
-.landing-form a{
-    display: flex;
-    background-color: 	#ffc348 !important;
-    color: whitesmoke;
-    outline: none;
-    border-color: #E5AF41;
-
-}
-
-.landing-form a:hover, .landing-form a:focus{
-    border-color: #E5AF41 !important;
-    background-color: #E5AF41 !important;
-    box-shadow: none !important;
-}
-
-.landing-form a:active{
-    border-color: #E5AF41 !important;
-    box-shadow: 0 0 0 0.2rem rgba(21,15,9,0.25) !important;
-}
-
-
-/* authorisation pages register and login */
-
 .btn-custom:hover, .btn-custom:focus{
     border-color: #E5AF41 !important;
     background-color: #E5AF41 !important;
@@ -60,7 +29,49 @@ body{
     border-color: #E5AF41;
 }
 
+/* global button styling */
+
 .btn-custom:active{
     border-color: #E5AF41 !important;
     box-shadow: 0 0 0 0.2rem rgba(21,15,9,0.25) !important;
+}
+
+
+/* Global Form Page Routes....Landing, login, register, book index, comments */
+
+.global-form{
+    background-color: rgba(255,255,255,0.8) !important;
+    margin-top: 7vh;
+    margin-bottom: 15%;
+}
+
+.global-form a{
+    display: flex;
+    background-color: 	#ffc348 !important;
+    color: whitesmoke;
+    outline: none;
+    border-color: #E5AF41;
+
+}
+
+.global-form a:hover, .global-form a:focus{
+    border-color: #E5AF41 !important;
+    background-color: #E5AF41 !important;
+    box-shadow: none !important;
+}
+
+.global-form a:active{
+    border-color: #E5AF41 !important;
+    box-shadow: 0 0 0 0.2rem rgba(21,15,9,0.25) !important;
+}
+
+
+/* Books Index/search routes */
+
+.display-contents{
+    background-color: rgba(255,255,255,0.8) !important;
+}
+
+.display-contents hr{
+    border-color: rgb(115, 115, 115) !important;
 }

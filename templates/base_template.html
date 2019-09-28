@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{% block title %}{% endblock %} - Book Reviews</title>
     
-    <link rel="icon" href="../static/img/icons/book-icons/64x64.png">
+    <link rel="icon" href="{{url_for('static', filename='img/icons/book-icons/64x64.png')}}">
 
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/d167e16c76.js" crossorigin="anonymous"></script>
@@ -22,9 +22,9 @@
     {% block navbar %}
     <nav class="navbar navbar-expand-lg">
         <a class="navbar-brand" href="/">
-            <img src="../static/img/icons/book-icons/bw.png" width="32px" height="auto" alt="Open Book Icon">
+            <img src="{{url_for('static', filename='img/icons/book-icons/bw.png')}}" width="32px" height="auto" alt="Open Book Icon">
         </a>
-        <a class="nav-link d-flex ml-auto " href="#">Logout</a>
+        <a class="nav-link d-flex ml-auto " href="{{ url_for('logout') }}">Logout</a>
     </nav>
     {% endblock %}
     <main id="content">{% block content %}{% endblock %}</div>

@@ -1,0 +1,22 @@
+{% extends "base_template.html" %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<section class="container">
+    {% for result in results %}
+        <div class="d-flex justify-content-center row">
+            <div class="col-md-6 display-contents">
+                <h5><a href="/books/{{result.book_id}}">{{result.title}}</a></h5>
+                <p>By {{result.author}} Year: {{result.year}} </p>   
+                <hr>
+            </div>
+        </div>
+    {% endfor %}
+    <div class="d-flex justify-content-center row">
+        <div class="d-flex justify-content-center col-md-3 my-3">
+            <a href="/books" class="btn btn-primary">Search Again ?</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

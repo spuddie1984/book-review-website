@@ -5,15 +5,15 @@
 {% block content%}
 <section class="container">
     <div class="row">
-        <div class="d-flex justify-content-center flex-column offset-md-8 col-md-5 py-5 landing-form">
-            <img class="mx-auto" src="../static/img/icons/book-icons/128x128.png" alt="Picture of a Book">
+        <div class="d-flex justify-content-center flex-column offset-md-8 col-md-5 py-5 global-form">
+            <img class="mx-auto" src="{{url_for('static', filename='img/icons/book-icons/128x128.png')}}" alt="Picture of a Book">
             <div class="mx-3 text-center">
                 <h1>The Book Review Site</h1>
                 <p class="mb-0">This is a Project for the Harvard EDX CS50W Course</p>
                 <p class="mb-0">Check out my github Page for the source code</p>
                 <p class="text-center"><small>(link in the footer)</small></p>
-                <a class="btn btn-primary mb-3 justify-content-center" href="/register">Register</a>
-                <a class="btn btn-primary justify-content-center" href="/login">Login</a>
+                <a class="btn btn-primary mb-3 justify-content-center" href="{{url_for('register')}}">Register</a>
+                <a class="btn btn-primary justify-content-center" href="{{url_for('login')}}">Login</a>
             </div>
         </div>
     </div>

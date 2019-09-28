@@ -30,6 +30,7 @@ db = scoped_session(sessionmaker(bind=engine))
 # landing page route
 @app.route("/", methods=['GET'])
 def index():
+    session.get('username', None)
     return render_template('landing.html')
 
 # Register Route   
@@ -39,75 +40,112 @@ def register():
         return render_template('/users/register.html')
     elif request.method == "POST":
         # grab the form data escape all data (sanitize) then enter the data into the database
-        userData = {
+        user_data = {
             "name": escape(request.form['name']),
             "username": escape(request.form['username']),
             "password": escape(request.form['password']),
         }
-        if db.execute('SELECT username FROM users WHERE username = :username',{'username':userData['username']}).rowcount == 0:
+        # Insert user info into DB (Name, username, password(will be hashed))
+        if db.execute('SELECT username FROM users WHERE username = :username',{'username':user_data['username']}).rowcount == 0:
             db.execute("INSERT INTO users (name, username, password) VALUES (:name, :username, :password)",
-            {'name':userData['name'], 'username':userData['username'], 'password':userData['password']})
+            {'name':user_data['name'], 'username':user_data['username'], 'password':user_data['password']})
             db.commit()
-            return render_template('/books/index.html', userData=userData['username']) # add flash message "Succesfully logged In"
+            session['username'] = user_data.username # Consider refactoring to use user_id in the DB
+            return redirect(url_for('books')) # add flash message "Succesfully logged In"
         else:
             return redirect(url_for('register')) # add flash message "Sorry that user already exists"
         
 # Login Route
 @app.route("/login", methods=['GET','POST'])
 def login():
-    if request.method == "GET":
-        return render_template('/users/login.html')
-    elif request.method == "POST":
-        # grab sanatized user data from the form check if user exists in the database
-        username = escape(request.form['username'])
-        password = escape(request.form['password'])
-        if db.execute('SELECT * FROM users WHERE username = :username',{'username':username}).rowcount == 0:
-            return redirect(url_for('login')) # add flash message "sorry that user doesn't exist please register or try again"
-        else:
-            # check user entered correct password if not redirect to login again
-            dbUserData = db.execute('SELECT * FROM users WHERE username = :username',{'username':username}).fetchall()
-            if dbUserData[0].username == username and dbUserData[0].password == password:
-                return render_template('/books/index.html') # add flash message "Successfully logged In"
+    if session.get('username') is None:
+        if request.method == "GET":
+            return render_template('/users/login.html')
+        elif request.method == "POST":
+            # grab sanatized user data from the form check if user exists in the database
+            username = escape(request.form['username'])
+            password = escape(request.form['password'])
+            if db.execute('SELECT * FROM users WHERE username = :username',{'username':username}).rowcount == 0:
+                return redirect(url_for('login')) # add flash message "sorry that user doesn't exist please register or try again"
             else:
-                return redirect(url_for('login')) # add flash message "sorry wrong username or password"
+                # check user entered correct password if not redirect to login again
+                db_user_data = db.execute('SELECT * FROM users WHERE username = :username',{'username':username}).fetchall()
+                if db_user_data[0].username == username and db_user_data[0].password == password:
+                    session['username'] = username # consider refactoring to use user_id from DB
+                    return redirect(url_for('books')) # add flash message "Successfully logged In"
+                else:
+                    return redirect(url_for('login')) # add flash message "sorry wrong username or password"
+    else:
+        return redirect(url_for('books')) # add flash message You're already logged in
 
 # Logout Route
 @app.route("/logout", methods=['GET'])
 def logout():
-    return render_template('base_template.html')
+    session['username'] = None
+    return redirect(url_for('index'))
 
 # Books INDEX/SEARCH Route
 @app.route("/books", methods=['GET','POST'])
 def books():
-    if request.method == "GET":
-        return render_template('/books/index.html')
-    elif request.method == "POST":
-        return render_template('/books/index.html')
+    if session['username'] is None:
+        return redirect(url_for('index')) # add flash message "You need to login for that !!!"
+    else:
+        if request.method == "GET":
+            return render_template('/books/index.html')
+        elif request.method == "POST":
+            search_request = request.form['search']
+            # search the DB for a partial or full match from columns for books ISBN,AUTHOR or TITLE
+            results = db.execute('SELECT * FROM bookslist WHERE isbn ~* :search_request OR title ~* :search_request OR author ~* :search_request', {'search_request':search_request}).fetchall()
+            db.commit()
+            if len(results) != 0:
+                return render_template('/books/results.html', results=results)
+            else:
+                return redirect(url_for('books')) # add flash message "sorry no books matched your search, please try again"
 
 # Individual Books SHOW Route
 @app.route("/books/<id>", methods=['GET'])
-def show_book():
-    return render_template('base_template.html')
+def show_book(id):
+    if session['username'] is None:
+        return redirect(url_for('index')) # add flash message "You need to login for that !!!"
+    else:
+        # get the Individual book from DB via the id passed into show_book route 
+        book = db.execute('SELECT * FROM bookslist WHERE book_id = :id',{"id":id}).fetchall()
+        print(book)
+        good_reads_data = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": os.getenv('API_KEY'), "isbns": book[0].isbn}).json()
+        return render_template('/books/show.html', book=book, good_reads_data=good_reads_data)
+        
 
 # New Comment Route
 @app.route("/books/<id>/comment/new", methods=['POST'])
-def new_comment():
-    return render_template('base_template.html')
+def new_comment(id):
+    if session['username'] is None:
+        return redirect(url_for('index')) # add flash message "You need to login for that !!!"
+    else:
+        return render_template('/comments/new.html')
 
 # Create New Comment Route
 @app.route("/books/<id>/comment", methods=['POST'])
 def create_comment():
-    return render_template('base_template.html')
+    if session['username'] is None:
+        return redirect(url_for('index')) # add flash message "You need to login for that !!!"
+    else:
+        return render_template('base_template.html')
 
 # Edit Comment Route
 @app.route("/books/<id>/comment/<comment_id>/edit", methods=['GET'])
 def edit_comment():
-    return render_template('base_template.html')
+    if session['username'] is None:
+        return redirect(url_for('index')) # add flash message "You need to login for that !!!"
+    else:
+        return render_template('base_template.html')
 
 # Update and Destroy Comment Route
 @app.route("/books/<id>/comment", methods=['PUT','DELETE'])
 def comment():
-    return render_template('base_template.html')
+    if session['username'] is None:
+        return redirect(url_for('index')) # add flash message "You need to login for that !!!"
+    else:
+        return render_template('base_template.html')
     
 # Api Route 
 @app.route("/books/api/<isbn>", methods=['GET'])
