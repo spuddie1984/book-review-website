@@ -13,12 +13,28 @@ if not os.getenv("LOCAL_DATABASE_URL"):
 engine = create_engine(os.getenv('LOCAL_DATABASE_URL'))
 db = scoped_session(sessionmaker(bind=engine))
 
+# create table for books Schema: 
+#   Table Name: "bookslist"
+#   id SERIAL primary key (auto incrementing integer)
+#   isbn: VARCHAR (string)  some isbn numbers contain characters
+#   title: VARCHAR (string)
+#   author: VARCHAR (string)
+#   year: INTEGER
+#   comments_id INTEGER REFERENCES comments
+db.execute('CREATE TABLE IF NOT EXISTS "bookslist" ('
+            'id SERIAL primary key,'
+            'isbn VARCHAR,'
+            'title VARCHAR,'
+            'author VARCHAR,'
+            'year INTEGER'');')
+db.commit()
+
 # Create table for Users Schema:
 #   Table Name: "users"
 #   username: VARCHAR (string) primary key NOT NULL (must have an entry)
 #   password: VARCHAR NOT NULL (hashed password)
 db.execute('CREATE TABLE IF NOT EXISTS "users" ('
-            'user_id SERIAL PRIMARY KEY,'
+            'id SERIAL PRIMARY KEY,'
             'name VARCHAR NOT NULL,'
             'username VARCHAR NOT NULL,'
             'password VARCHAR NOT NULL'');')
@@ -34,24 +50,8 @@ db.execute('CREATE TABLE IF NOT EXISTS "comments"('
             'comment_id SERIAL PRIMARY KEY,'
             'comment VARCHAR,'
             'user_rating INTEGER NOT NULL,'
-            'user_id INTEGER REFERENCES users(user_id)'');')
-db.commit()
-
-# create table for books Schema: 
-#   Table Name: "bookslist"
-#   id SERIAL primary key (auto incrementing integer)
-#   isbn: VARCHAR (string)  some isbn numbers contain characters
-#   title: VARCHAR (string)
-#   author: VARCHAR (string)
-#   year: INTEGER
-#   comments_id INTEGER REFERENCES comments
-db.execute('CREATE TABLE IF NOT EXISTS "bookslist" ('
-            'book_id SERIAL primary key,'
-            'isbn VARCHAR,'
-            'title VARCHAR,'
-            'author VARCHAR,'
-            'year INTEGER,'
-            'comment_id INTEGER REFERENCES comments(comment_id)'');')
+            'book_id INTEGER REFERENCES bookslist(id),'
+            'user_id INTEGER REFERENCES users(id)'');')
 db.commit()
 
 # setup csv reader to read the books.csv file

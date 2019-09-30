@@ -37,3 +37,26 @@ author or isbn.
 - hookup api good reads to show book route...show review count and average rating
 - update/fix static image links to use url_for method
 
+#### 4th Commit - Comment DB integration
+
+- Add form to new comment route with ability to add a comment and rating (one comment/rating per book per user)
+- Add new comment to DB with user id and and comment id to associated book in the DB as well
+- store username and user_id in session
+- improve redirects on login route
+- Add logic to show template for comments (if have messages show them else display a message "no comments")
+- Add logic to prevent user from leaving more then one comment per book
+- Add user dictionary with username and user_id (from DB)
+- Add book title to tab bar in SHOW book template
+
+#### 5th Commit - Add CRUD to comments, Styling Updates, Flash Messages
+
+- Add edit and delete buttons to comments (if comments exist) show book route
+- Add DB logic to UPDATE + DELETE routes
+- Add form for updating comments
+- Fix mobile responsiveness
+- Fix footer overlap
+- style search results box
+- convert users rating to a star rating (at the moment its just a number)
+- Update forms with required on neccessary inputs
+
+#### 6th Commit - Hash passwords, add more details from goodreads api to show page, 404 page

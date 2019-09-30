@@ -1,15 +1,16 @@
 {% extends "base_template.html" %}
 
-{% block title %}{% endblock %}
+{% block title %}{{book[0].title}} by {{book[0].author}}{% endblock %}
 
 {% block content %}
 <section class="container">
     <div class="d-flex justify-content-center row">
         <div class="col-md-2 display-contents">
             <img class="mx-auto" src="{{url_for('static', filename='img/icons/book-icons/128x128.png')}}" alt="Picture of a Book">
-            <form action="/books/{{book[0].book_id}}/comment/new" method="POST">
-                <button class="btn btn-primary" type="submit">New Comment</button>
-            </form>
+            {# If the user has already added a comment to this book don't display the new comment button else display it #}
+            {% if book[0].user_id  !=  session_user_id%}
+            <a class="btn btn-primary" href="/books/{{book[0].id}}/comment/new">New Comment</a>
+            {% endif %}
         </div>
         <div class="col-md-4 display-contents">
             <h5>{{book[0].title}}</h5>
@@ -18,6 +19,17 @@
             <p><em>ISBN:</em> {{book[0].isbn}}</p>
             <p><em>Reviews:</em> {{good_reads_data.books[0].reviews_count}}</p>
             <p><em>Average Rating:</em> {{good_reads_data.books[0].average_rating}}</p>
+        </div>
+    </div>
+    <div class="d-flex justify-content-center row mt-2">
+        <div class="col-md-6 display-contents p-2">
+            <h4 class="pull-left">Comments</h4>
+            {% if book[0].comment_id is none %}
+            <p>Sorry No comments yet!!!</p>
+            {% else %}
+                <p class="pl-2">{{book[0].comment}} <span class="pull-right">{{book[0].user_rating}}</span></p>
+            {% endif %}
+
         </div>
     </div>
 </section>
