@@ -64,3 +64,4 @@ author or isbn.
 - setup 404 error handler route and style accordingly
 - Use Beautiful Soup to parse xml pages
 - Add goodreads book data (extracted using beautiful soup) to show book page
+- Refactor api route so that a json response is returned if somebody submits a get request

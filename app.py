@@ -12,7 +12,7 @@ from flask_bcrypt import Bcrypt
 from bs4 import BeautifulSoup
 
 # env file
-# load_dotenv()
+load_dotenv()
 
 app = Flask(__name__)
 
@@ -211,13 +211,27 @@ def comment():
             return redirect(url_for('show_book', id=id))
     
 # Api Route 
-@app.route("/books/api/<isbn>", methods=['GET'])
+@app.route("/api/<isbn>", methods=['GET'])
 def api(isbn):
-    res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "API_KEY", "isbns": isbn})
-    if res.status_code == 200:
-        return "Well done"
+    response = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": os.getenv("API_KEY"), "isbns": isbn})
+    if response.status_code == 200:
+        if db.execute('SELECT isbn FROM bookslist WHERE isbn = :isbn', {'isbn': isbn}).rowcount != 0:
+            find_book_data = db.execute('SELECT title, author, year, isbn FROM bookslist WHERE isbn = :isbn', {'isbn': isbn}).fetchall()
+            # convert the get request response to a json like dictionary
+            book_reviews = response.json()
+            # return a json object
+            return {
+                "title": find_book_data[0].title,
+                "author": find_book_data[0].author,
+                "year": find_book_data[0].year,
+                "isbn": find_book_data[0].isbn,
+                "review_count": book_reviews['books'][0]['reviews_count'],
+                "average_score": book_reviews['books'][0]['average_rating']
+            }
     else:
-        return 'Sorry we encounted a problem. This is the Error Code !!!!'
+        # 404 error response
+        return {'error': '404  That book doesn\'t exist in our database'}
+
 
 # 404/Catch all Route 
 @app.errorhandler(404)
