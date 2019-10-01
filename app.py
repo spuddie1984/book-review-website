@@ -7,11 +7,16 @@ from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from dotenv import load_dotenv
+from flask_bcrypt import Bcrypt
+# for parse xml data from the goodreads book api
+from bs4 import BeautifulSoup
 
 # env file
 # load_dotenv()
 
 app = Flask(__name__)
+
+bcrypt = Bcrypt(app)
 
 # Check for environment variable
 if not os.getenv("LOCAL_DATABASE_URL"):
@@ -40,11 +45,11 @@ def register():
     if request.method == "GET":
         return render_template('/users/register.html')
     elif request.method == "POST":
-        # grab the form data escape all data (sanitize) then enter the data into the database
+        # grab the form data escape all data (sanitize) hash the password then enter the data into the database
         user_data = {
             "name": escape(request.form['name']),
             "username": escape(request.form['username']),
-            "password": escape(request.form['password']),
+            "password": bcrypt.generate_password_hash(escape(request.form['password'])).decode('utf-8'),
         }
         # Insert user info into DB (Name, username, password(will be hashed))
         if db.execute('SELECT username FROM users WHERE username = :username',{'username':user_data['username']}).rowcount == 0:
@@ -71,14 +76,14 @@ def login():
         elif request.method == "POST":
             # grab sanatized user data from the form check if user exists in the database
             username = escape(request.form['username'])
-            password = escape(request.form['password'])
+            password = request.form['password']
             if db.execute('SELECT * FROM users WHERE username = :username',{'username':username}).rowcount == 0:
                 flash(u'That user doesn\'t exist, please register or try again', 'error')
                 return redirect(url_for('index')) # add flash message "sorry that user doesn't exist please register or try again"
             else:
                 # check user entered correct password if not redirect to login again
                 db_user_data = db.execute('SELECT * FROM users WHERE username = :username',{'username':username}).fetchall()
-                if db_user_data[0].username == username and db_user_data[0].password == password:
+                if db_user_data[0].username == username and bcrypt.check_password_hash(db_user_data[0].password, password):
                     session['username'] = {'username':db_user_data[0].username, 'id':db_user_data[0].id} # consider refactoring to use user_id from DB
                     flash(u'Successfully Logged In', 'success')
                     return redirect(url_for('books')) # add flash message "Successfully logged In"
@@ -126,8 +131,24 @@ def show_book(id):
         # get the Individual book from DB via the id passed into show_book route 
         session_user = session.get('username')
         book = db.execute('SELECT * FROM bookslist LEFT JOIN comments ON comments.book_id = :book_id WHERE bookslist.id = :book_id',{'book_id':id}).fetchall()
-        good_reads_data = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": os.getenv('API_KEY'), "isbns": book[0].isbn}).json()
-        return render_template('/books/show.html', book=book, good_reads_data=good_reads_data, session_user_id=session_user['id'])
+        # Api calls to goodreads
+        # review count api call
+        good_reads_reviews = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": os.getenv('API_KEY'), "isbns": book[0].isbn}).json()
+        # full book data api call (xml format only)
+        good_reads_book_data = requests.get("https://www.goodreads.com/book/isbsn/", params={"isbn": book[0].isbn, "key": os.getenv('API_KEY')})
+        # extract book data using Beautiful soup
+        data_soup = BeautifulSoup(good_reads_book_data.content, 'xml')
+        # push this to the show template  
+        extracted_book_data = {
+            "description": data_soup.find('description').get_text(),
+            "image": data_soup.find('image_url').get_text()
+        }
+        print(extracted_book_data)
+        return render_template('/books/show.html', 
+            book=book, extracted_book_data=extracted_book_data,
+            good_reads_reviews=good_reads_reviews, 
+            session_user_id=session_user['id']
+        )
         
 # NEW Comment Route
 @app.route("/books/<id>/comment/new", methods=['GET'])
@@ -199,6 +220,11 @@ def api(isbn):
         return 'Sorry we encounted a problem. This is the Error Code !!!!'
 
 # 404/Catch all Route 
-@app.route("/books/<catch_all>", methods=['GET'])
-def catch_all():
-    return render_template('base_template.html')
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('error.html', error=e)
+
+# 500 Server error handler
+@app.errorhandler(500)
+def server_problem(e):
+    return render_template('error.html', error=e)

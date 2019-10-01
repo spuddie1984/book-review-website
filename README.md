@@ -58,3 +58,9 @@ author or isbn.
 - Add flash messages
 
 #### 6th Commit - Hash passwords, add more details from goodreads api to show page, 404 page
+
+- Install and use the B-crypt hashing library
+- refactor register/login routes, store hashed password in DB
+- setup 404 error handler route and style accordingly
+- Use Beautiful Soup to parse xml pages
+- Add goodreads book data (extracted using beautiful soup) to show book page

@@ -18,6 +18,15 @@
                     <input type="password" class="form-control" id="login-password" name="password" placeholder="Password Please" required>
                 </div>
                 <button type="submit" class="btn btn-block btn-custom">Login</button>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, msg in messages %}
+                            <div class="alert alert-{{category}} my-1" role="alert">
+                                {{msg}}
+                            </div>
+                        {% endfor %}
+                    {% endif%}
+                {% endwith %}
             </form>
         </div>
     </div>

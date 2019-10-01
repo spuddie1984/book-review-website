@@ -3,3 +3,5 @@ Flask-Session
 psycopg2-binary
 SQLAlchemy
 python-dotenv
+flask-bcrypt
+bs4
