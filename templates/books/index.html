@@ -10,9 +10,18 @@
             <form action="{{url_for('books')}}" method="POST">
                 <h1 class="text-center">Search</h1>
                 <div class="form-group">
-                    <input type="text" class="form-control" id="Name" name="search" placeholder="Author, ISBN or Title">
+                    <input type="text" class="form-control" id="Name" name="search" placeholder="Author, ISBN or Title" required>
                 </div>
                 <button type="submit" class="btn btn-block btn-custom">Search</button>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, msg in messages %}
+                            <div class="alert alert-{{category}} my-1" role="alert">
+                                {{msg}}
+                            </div>
+                        {% endfor %}
+                    {% endif%}
+                {% endwith %}
             </form>
         </div>
     </div>

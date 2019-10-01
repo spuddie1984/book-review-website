@@ -48,15 +48,13 @@ author or isbn.
 - Add user dictionary with username and user_id (from DB)
 - Add book title to tab bar in SHOW book template
 
-#### 5th Commit - Add CRUD to comments, Styling Updates, Flash Messages
+#### 5th Commit - Styling Updates, Flash Messages
 
-- Add edit and delete buttons to comments (if comments exist) show book route
-- Add DB logic to UPDATE + DELETE routes
-- Add form for updating comments
 - Fix mobile responsiveness
 - Fix footer overlap
 - style search results box
 - convert users rating to a star rating (at the moment its just a number)
 - Update forms with required on neccessary inputs
+- Add flash messages
 
 #### 6th Commit - Hash passwords, add more details from goodreads api to show page, 404 page

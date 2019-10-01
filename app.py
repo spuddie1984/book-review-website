@@ -1,14 +1,15 @@
 import os
 import requests
 
-from flask import Flask, session, request, escape, redirect, url_for
+from flask import Flask, flash, session, request, escape, redirect, url_for
 from flask import render_template
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from dotenv import load_dotenv
 
-load_dotenv()
+# env file
+# load_dotenv()
 
 app = Flask(__name__)
 
@@ -55,8 +56,10 @@ def register():
             # initial session variable then write user to the 'username variable
             session['username'] = None
             session['username'] = {'username':db_user_data[0].username, 'id':db_user_data[0].id}
+            flash(u'Successfully Logged In', 'success')
             return redirect(url_for('books')) # add flash message "Succesfully logged In"
         else:
+            flash(u'Sorry that user already exists', 'error')
             return redirect(url_for('register')) # add flash message "Sorry that user already exists"
         
 # Login Route
@@ -70,28 +73,33 @@ def login():
             username = escape(request.form['username'])
             password = escape(request.form['password'])
             if db.execute('SELECT * FROM users WHERE username = :username',{'username':username}).rowcount == 0:
+                flash(u'That user doesn\'t exist, please register or try again', 'error')
                 return redirect(url_for('index')) # add flash message "sorry that user doesn't exist please register or try again"
             else:
                 # check user entered correct password if not redirect to login again
                 db_user_data = db.execute('SELECT * FROM users WHERE username = :username',{'username':username}).fetchall()
                 if db_user_data[0].username == username and db_user_data[0].password == password:
                     session['username'] = {'username':db_user_data[0].username, 'id':db_user_data[0].id} # consider refactoring to use user_id from DB
+                    flash(u'Successfully Logged In', 'success')
                     return redirect(url_for('books')) # add flash message "Successfully logged In"
                 else:
+                    flash(u'Try logging In again', 'error')
                     return redirect(url_for('login')) # add flash message "Try logging In again"
     else:
-        return redirect(url_for('books')) # add flash message You're already logged in
+        return redirect(url_for('books'))
 
 # Logout Route
 @app.route("/logout", methods=['GET'])
 def logout():
     session['username'] = None
+    flash(u'Successfully Logged Out', 'success')
     return redirect(url_for('index'))
 
 # Books INDEX/SEARCH Route
 @app.route("/books", methods=['GET','POST'])
 def books():
     if session['username'] is None:
+        flash(u'You need to login for that !!!', 'error')
         return redirect(url_for('index')) # add flash message "You need to login for that !!!"
     else:
         if request.method == "GET":
@@ -105,12 +113,14 @@ def books():
             if len(results) != 0:
                 return render_template('/books/results.html', results=results)
             else:
+                flash(u'Sorry no books matched your search, please try again!!', 'error')
                 return redirect(url_for('books')) # add flash message "sorry no books matched your search, please try again"
 
 # Individual Books SHOW Route
 @app.route("/books/<id>", methods=['GET'])
 def show_book(id):
     if session['username'] is None:
+        flash(u'You need to login for that !!!', 'error')
         return redirect(url_for('index')) # add flash message "You need to login for that !!!"
     else:
         # get the Individual book from DB via the id passed into show_book route 
@@ -124,6 +134,7 @@ def show_book(id):
 def new_comment(id):
     # display new comment form if user is logged in
     if session['username'] is None:
+        flash(u'You need to login for that !!!')
         return redirect(url_for('index')) # add flash message "You need to login for that !!!"
     else:
         return render_template('/comments/new.html', id=id)
@@ -133,6 +144,7 @@ def new_comment(id):
 def create_comment(id):
     # if user is loggedIn save (espaced)comment data to DB then redirect to show page
     if session['username'] is None:
+        flash(u'You need to login for that !!!', 'error')
         return redirect(url_for('index')) # add flash message "You need to login for that !!!"
     else:
         user = session.get('username')
@@ -144,24 +156,28 @@ def create_comment(id):
             rating = escape(request.form['star-rating'])
             save_comment = db.execute('INSERT INTO comments (comment, user_rating, book_id, user_id) VALUES (:comment, :user_rating, :book_id, :user_id)',{"comment":comment, "user_rating": rating, "book_id": id, "user_id": user["id"] })
             db.commit()
+            flash(u"You've successfully added a comment", 'success')
             return redirect(url_for('show_book', id=id)) # add flash message "You've successfully added a comment, remember one comment per book/user"
         else: 
+            flash(u"Sorry you've already added a comment, 1 comment per user/book", 'error')
             return redirect(url_for('show_book', id=id)) # add flash message 'Sorry you've already added a comment to that book 1 comment per book/user!!'
 
 # EDIT Comment Route
 @app.route("/books/<id>/comment/<comment_id>/edit", methods=['GET'])
-def edit_comment():
+def edit_comment(id,comment_id):
     if session['username'] is None:
+        flash(u'You need to login for that !!!', 'error')
         return redirect(url_for('index')) # add flash message "You need to login for that !!!"
     else:
         # Grab comments data from DB and send to edit comments template
         ####### INSERT DB QUERY HERE #######
-        return render_template('/comments/edit/html')
+        return render_template('/comments/edit.html')
 
 # UPDATE and DESTROY Comment Route
 @app.route("/books/<id>/comment/<comment_id>", methods=['PUT','DELETE'])
 def comment():
     if session['username'] is None:
+        flash(u'You need to login for that', 'error')
         return redirect(url_for('index')) # add flash message "You need to login for that !!!"
     else:
         if request.method == "PUT":

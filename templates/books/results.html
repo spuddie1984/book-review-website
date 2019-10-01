@@ -3,20 +3,22 @@
 {% block title %}Search Results{% endblock %}
 
 {% block content %}
-<section class="container">
+<section class="container custom-margins">
+    <div class="d-flex justify-content-center row mt-4">
+        <div class="d-flex col-md-4 flex-column justify-content-center display-contents py-5">
+            <img class="mx-auto" src="{{url_for('static', filename='img/icons/clipboard-icons/128x128.png')}}" alt="Clipboard Icon">
+            <h3 class="mx-auto mt-3 mb-1">Results</h3>
+        </div>
+    </div>
+        
     {% for result in results %}
         <div class="d-flex justify-content-center row">
-            <div class="col-md-6 display-contents">
-                <h5><a href="/books/{{result.id}}">{{result.title}}</a></h5>
-                <p>By {{result.author}} Year: {{result.year}} </p>   
+            <div class="col-md-4 display-contents pl-3">
+                <h5 class="results-page-titles"><a href="/books/{{result.id}}">{{result.title}}</a></h5>
+                <p class="pl-2">By {{result.author}} Year: {{result.year}} </p>   
                 <hr>
             </div>
         </div>
     {% endfor %}
-    <div class="d-flex justify-content-center row">
-        <div class="d-flex justify-content-center col-md-3 my-3">
-            <a href="/books" class="btn btn-primary">Search Again ?</a>
-        </div>
-    </div>
 </section>
 {% endblock %}

@@ -3,33 +3,59 @@
 {% block title %}{{book[0].title}} by {{book[0].author}}{% endblock %}
 
 {% block content %}
-<section class="container">
-    <div class="d-flex justify-content-center row">
-        <div class="col-md-2 display-contents">
-            <img class="mx-auto" src="{{url_for('static', filename='img/icons/book-icons/128x128.png')}}" alt="Picture of a Book">
-            {# If the user has already added a comment to this book don't display the new comment button else display it #}
-            {% if book[0].user_id  !=  session_user_id%}
-            <a class="btn btn-primary" href="/books/{{book[0].id}}/comment/new">New Comment</a>
-            {% endif %}
-        </div>
-        <div class="col-md-4 display-contents">
-            <h5>{{book[0].title}}</h5>
-            <p><em>Author:</em> {{book[0].author}}</p>
-            <p><em>Year Released:</em> {{book[0].year}}</p>
-            <p><em>ISBN:</em> {{book[0].isbn}}</p>
-            <p><em>Reviews:</em> {{good_reads_data.books[0].reviews_count}}</p>
-            <p><em>Average Rating:</em> {{good_reads_data.books[0].average_rating}}</p>
+<section class="container custom-margins">
+    <div class="d-flex justify-content-center row mt-3 mx-2">
+        <div class="col-md-5 display-contents">
+            <div class="d-flex">
+                <img class="ml-3 mt-3" src="{{url_for('static', filename='img/icons/book-icons/128x128.png')}}" alt="Picture of a Book">
+                <div class="d-flex flex-column align-self-center">
+                    <h3 class="align-self-center ml-3 mt-3 mb-0">{{book[0].title}}</h3>
+                    <p class="align-self-center ml-3">By {{book[0].author}}</p>
+                </div>
+            </div>
+            <div class="d-flex justify-content-around">
+                <div class="flex-column">
+                    <p class="mb-0"><em>Year Released:</em> {{book[0].year}}</p>
+                    <p class="mb-0"><em>ISBN:</em> {{book[0].isbn}}</p>
+                </div>
+                <div class="flex-column">
+                    <p class="mb-0"><em>Reviews:</em> {{good_reads_data.books[0].reviews_count}}</p>
+                    <p class=""><em>Average Rating:</em> {{good_reads_data.books[0].average_rating}}</p>
+                </div>
+            </div>
+            
         </div>
     </div>
-    <div class="d-flex justify-content-center row mt-2">
-        <div class="col-md-6 display-contents p-2">
-            <h4 class="pull-left">Comments</h4>
+    <div class="d-flex justify-content-center row mt-2 mb-1 mx-2">
+        <div class="col-md-5 display-contents p-2">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, msg in messages %}
+                        <div class="alert alert-{{category}} my-1" role="alert">
+                            {{msg}}
+                        </div>
+                    {% endfor %}
+                {% endif%}
+            {% endwith %}
+            <h4 class="d-inline-flex">Comments</h4>
+            {# If the user has already added a comment to this book don't display the new comment button else display it #}
+            {% if book[0].user_id  !=  session_user_id%}
+            <a class="btn btn-primary btn-custom float-right" href="/books/{{book[0].id}}/comment/new">New Comment</a>
+            {% endif %}
             {% if book[0].comment_id is none %}
             <p>Sorry No comments yet!!!</p>
-            {% else %}
-                <p class="pl-2">{{book[0].comment}} <span class="pull-right">{{book[0].user_rating}}</span></p>
+            {% elif book[0].comment_id  %}
+                {% for book_data in book %}
+                <p class=" pl-2 mb-0">{{('&#9733;' * book_data.user_rating)|safe}}</p>
+                <p class="pl-2 d-inline-flex">{{book_data.comment}}</p>
+                {% endfor %}
             {% endif %}
 
+        </div>
+    </div>
+    <div class="d-flex justify-content-center row mx-2">
+        <div class="col-md-5 mt-0 px-0">
+            <a href="{{url_for('books')}}" class="btn btn-primary btn-block btn-custom">Search Again ?</a>
         </div>
     </div>
 </section>

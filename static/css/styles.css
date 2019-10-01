@@ -2,6 +2,7 @@
 
 body{
     background-image:url(../img/book-background-1.jpg);
+    background-attachment: fixed;
 }
 
 .navbar{
@@ -24,8 +25,8 @@ body{
 }
 
 .btn-custom{
-    background-color: #ffc348;
-    color: whitesmoke;
+    background-color: #ffc348 ;
+    color: whitesmoke !important;
     border-color: #E5AF41;
 }
 
@@ -65,6 +66,19 @@ body{
     box-shadow: 0 0 0 0.2rem rgba(21,15,9,0.25) !important;
 }
 
+/* Bootstrap Overrides */
+
+.alert-error{
+    background-color: rgba(255, 0, 0, 0.8) !important;
+    color: whitesmoke !important;
+    text-align: center !important;
+}
+
+.alert-success{
+    background-color: rgba(0, 171, 8, 0.8) !important;
+    color: whitesmoke !important;
+    text-align: center !important;
+}
 
 /* Books Index/search routes */
 
@@ -74,4 +88,13 @@ body{
 
 .display-contents hr{
     border-color: rgb(115, 115, 115) !important;
+}
+
+.custom-margins{
+    margin-top: 5%;
+    margin-bottom: 17vh;
+}
+
+.results-page-titles a{
+    color: #806224 !important;
 }

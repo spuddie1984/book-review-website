@@ -5,7 +5,7 @@
 {% block content%}
 <section class="container">
     <div class="row">
-        <div class="d-flex justify-content-center flex-column offset-md-8 col-md-5 py-5 global-form">
+        <div class="d-flex justify-content-center flex-column offset-md-8 col-md-5 pt-5 pb-4 global-form">
             <img class="mx-auto" src="{{url_for('static', filename='img/icons/book-icons/128x128.png')}}" alt="Picture of a Book">
             <div class="mx-3 text-center">
                 <h1>The Book Review Site</h1>
@@ -14,6 +14,15 @@
                 <p class="text-center"><small>(link in the footer)</small></p>
                 <a class="btn btn-primary mb-3 justify-content-center" href="{{url_for('register')}}">Register</a>
                 <a class="btn btn-primary justify-content-center" href="{{url_for('login')}}">Login</a>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, msg in messages %}
+                            <div class="alert alert-{{category}} my-1" role="alert">
+                                {{msg}}
+                            </div>
+                        {% endfor %}
+                    {% endif%}
+                {% endwith %}
             </div>
         </div>
     </div>
