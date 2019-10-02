@@ -1,7 +1,65 @@
 ## Book Review Website Flask based App
 _This project is one of the projects on cs50w track_ [check it out here](https://docs.cs50.net/web/2019/x/projects/1/project1.html)
 
+## About My App
 
+**I've used a library to use an .env file....just create your own with the required env variables (like api key and database url)**
+
+
+### File Structure
+
+I've tried to break the views/templates up into different directories so that it is easier to navigate
+```
+
+--templates
+    |--books
+    |   |---index.html
+    |   |---results.html
+    |   |---show.html
+    |
+    |--comments
+    |   |---new.html
+    |
+    |--users
+    |   |---login.html
+    |   |---register.html
+    |
+    |--base_template.html
+    |--error.html
+    |--landing.html
+```
+The rest of the structure is self explanatory.
+
+### Routing
+
+Added Custom Error handlers (404 and 500)
+
+**Routing Table**
+
+|         Name         |          URL         | Verb |                        Description                         |
+|----------------------|----------------------|------|------------------------------------------------------------|
+|Register              |    /register         | GET  | Display a registration form                                |
+|Create a New User     |    /register         | POST | Create a new user in the DB and redirect to search page    |
+|Login                 |    /login            | GET  | Display login form                                         |
+|Login Submission      |    /login            | POST | Authenticate user in DB then redirect to search page       |
+|Logout                |    /logout           | GET  | Logout User redirect to landing page                       |
+|Search/Index          |    /books            | GET  | display a search form                                      |
+|Display Search Results|    /books            | POST | Search the DB show the Results                             |
+|Individual Book       |  /books/:id          | GET  | Display details of Individual Book                         |
+|New Comment           |/books/:id/comment/new| GET  | Display a form to add a new comment                        |
+|Create New Comment    |  /books:id/comment   | POST | Add new comment to DB then redirect to individual book page|
+|Api Access            |  /api/:isbn          | GET  | Search DB for isbn return book details or 404 error        |
+
+
+### Extras (things added outside the requirement, for cs50w project 1)
+
+- Mobile responsive with bootstrap
+- Custom override styles to add a personal touch
+- free for commercial use logos to make the app look more professional
+- flash messages (needs a bit of tweaking) to register/login, book, individual book and comment routes
+- Extra api request from goodreads.  Use beautiful soup to parse xml encoded api data from goodreads then show (on an individual book page) the extra data (book image and book description)
+- Hash passwords stored in the DB with bcrypt
+- Use dotenv so that env variables can be stored in one spot, namely the .env file
 
 #### 1st Commit - Routing, Basic Setup
 
@@ -65,3 +123,9 @@ author or isbn.
 - Use Beautiful Soup to parse xml pages
 - Add goodreads book data (extracted using beautiful soup) to show book page
 - Refactor api route so that a json response is returned if somebody submits a get request
+
+#### 7th Commit - General Tidy-Up 
+
+- remove flash message comments 
+- Add routes table to readme
+- style updates

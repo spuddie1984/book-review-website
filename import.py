@@ -5,12 +5,10 @@ import csv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-print(os.getenv('DATABASE_URL'))
+if not os.getenv("LIVE_DATABASE_URL"):
+    raise RuntimeError("LIVE_DATABASE_URL is not set")
 
-if not os.getenv("LOCAL_DATABASE_URL"):
-    raise RuntimeError("LOCAL_DATABASE_URL is not set")
-
-engine = create_engine(os.getenv('LOCAL_DATABASE_URL'))
+engine = create_engine(os.getenv('LIVE_DATABASE_URL'))
 db = scoped_session(sessionmaker(bind=engine))
 
 # create table for books Schema: 
