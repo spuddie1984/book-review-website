@@ -7,3 +7,4 @@ python-dotenv
 flask-bcrypt
 bs4
 lxml
+gunicorn
