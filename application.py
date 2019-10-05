@@ -42,32 +42,33 @@ def index():
     return render_template('landing.html')
 
 # Register Route   
-@app.route("/register", methods=['GET','POST'])
-def register():
-    if request.method == "GET":
-        return render_template('/users/register.html')
-    elif request.method == "POST":
-        # grab the form data escape all data (sanitize) hash the password then enter the data into the database
-        user_data = {
-            "name": escape(request.form['name']),
-            "username": escape(request.form['username']),
-            "password": bcrypt.generate_password_hash(escape(request.form['password'])).decode('utf-8'),
-        }
-        # Insert user info into DB (Name, username, password(will be hashed))
-        if db.execute('SELECT username FROM users WHERE username = :username',{'username':user_data['username']}).rowcount == 0:
-            db.execute("INSERT INTO users (name, username, password) VALUES (:name, :username, :password)",
-            {'name':user_data['name'], 'username':user_data['username'], 'password':user_data['password']})
-            # grab user data from database will use DB user id in sessions['username] 
-            db_user_data = db.execute('SELECT * FROM users WHERE username = :username',{'username':user_data['username']}).fetchall()
-            db.commit()
-            # initial session variable then write user to the 'username variable
-            session['username'] = None
-            session['username'] = {'username':db_user_data[0].username, 'id':db_user_data[0].id}
-            flash(u'Successfully Logged In', 'success')
-            return redirect(url_for('books'))
-        else:
-            flash(u'Sorry that user already exists', 'error')
-            return redirect(url_for('register'))
+# Register route disabled the app will be used for demo purposes only
+# @app.route("/register", methods=['GET','POST'])
+# def register():
+#     if request.method == "GET":
+#         return render_template('/users/register.html')
+#     elif request.method == "POST":
+#         # grab the form data escape all data (sanitize) hash the password then enter the data into the database
+#         user_data = {
+#             "name": escape(request.form['name']),
+#             "username": escape(request.form['username']),
+#             "password": bcrypt.generate_password_hash(escape(request.form['password'])).decode('utf-8'),
+#         }
+#         # Insert user info into DB (Name, username, password(will be hashed))
+#         if db.execute('SELECT username FROM users WHERE username = :username',{'username':user_data['username']}).rowcount == 0:
+#             db.execute("INSERT INTO users (name, username, password) VALUES (:name, :username, :password)",
+#             {'name':user_data['name'], 'username':user_data['username'], 'password':user_data['password']})
+#             # grab user data from database will use DB user id in sessions['username] 
+#             db_user_data = db.execute('SELECT * FROM users WHERE username = :username',{'username':user_data['username']}).fetchall()
+#             db.commit()
+#             # initial session variable then write user to the 'username variable
+#             session['username'] = None
+#             session['username'] = {'username':db_user_data[0].username, 'id':db_user_data[0].id}
+#             flash(u'Successfully Logged In', 'success')
+#             return redirect(url_for('books'))
+#         else:
+#             flash(u'Sorry that user already exists', 'error')
+#             return redirect(url_for('register'))
         
 # Login Route
 @app.route("/login", methods=['GET','POST'])
