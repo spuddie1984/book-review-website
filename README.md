@@ -129,3 +129,8 @@ author or isbn.
 - remove flash message comments 
 - Add routes table to readme
 - style updates
+
+#### 8th Commit - Improve Login UX for Demo Purposes
+
+- Add detials on landing page about how to login
+- prefill login form with username and password so that people can test the App's functionality

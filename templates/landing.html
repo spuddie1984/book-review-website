@@ -14,7 +14,8 @@
                 <p class="text-center"><small>(link in the footer)</small></p>
                 
                 <a class="btn btn-primary justify-content-center" href="{{url_for('login')}}">Login</a>
-                <p class="text-center"><small style="color:red !important">Please Note I have disabled registration so that the database doesnt get clogged up with users</small></p>
+                <p class="text-center"><small style="color:red !important">Please Note I have disabled registration so that the database doesnt get clogged up with users.</small></p>
+                <p class="text-center"><small style="color:red !important">Please Note when you go to login the username and password fields will be prefilled, just login !!!</small></p>
                 {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages %}
                         {% for category, msg in messages %}

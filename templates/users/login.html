@@ -11,11 +11,11 @@
                 <h1 class="text-center">Login Form</h1>
                 <div class="form-group">
                     <label for="Username">Username</label>
-                    <input type="text" class="form-control" id="Username" name="username" placeholder="Your Username Please" required>
+                    <input type="text" class="form-control" id="Username" name="username" value="nathan" placeholder="Your Username Please" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" class="form-control" id="login-password" name="password" placeholder="Password Please" required>
+                    <input type="password" class="form-control" id="login-password" name="password" value="nathan" placeholder="Password Please" required>
                 </div>
                 <button type="submit" class="btn btn-block btn-custom">Login</button>
                 {% with messages = get_flashed_messages(with_categories=true) %}
